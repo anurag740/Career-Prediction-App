@@ -12,7 +12,6 @@ import joblib
 data = pd.read_csv("D:/git_projects/Career-Prediction-App/dataset/jobroles_IT.csv")
 
 # Preprocess the data
-# Split the interested subjects and additional job roles into lists
 data["Interested Subjects"] = data["Interested Subjects"].str.split(", ")
 additional_roles_columns = ["Job Role", "Job Role 1", "Job Role 2", "Job Role 3", "Job Role 4"]
 data["Job Roles"] = data[additional_roles_columns].values.tolist()
@@ -54,27 +53,35 @@ pipeline = Pipeline(
 # Train the model
 pipeline.fit(X_train, y_train)
 
-# Save the model
+# Save the model for Flask
 joblib.dump((pipeline, mlb), "career_predictor_model.pkl")
-
 print("Model trained and saved as 'career_predictor_model.pkl'.")
 
-# Function for predictions
-def predict_job_roles(certifications, interested_subjects, education_level):
+# Prediction function compatible with Flask
+def predict_job_roles_flask(certifications, interested_subjects, education_level):
+    """
+    Predict job roles based on user inputs.
+    """
+    # Load the trained model and MultiLabelBinarizer
+    pipeline, mlb = joblib.load("career_predictor_model.pkl")
+    
+    # Prepare the input data
     input_data = pd.DataFrame({
         "Certifications": [certifications],
-        "Interested Subjects": [interested_subjects],
+        "Interested Subjects": [", ".join(interested_subjects) if isinstance(interested_subjects, list) else interested_subjects],
         "Education Level": [education_level]
     })
-    input_data["Interested Subjects"] = input_data["Interested Subjects"].apply(lambda x: ", ".join(x))
+    
+    # Predict job roles
     predictions = pipeline.predict(input_data)
     predicted_roles = mlb.inverse_transform(predictions)
-    return predicted_roles[0]
+    return predicted_roles[0] if predicted_roles else []
 
-# Example usage
-example_certifications = "AWS Certified Solutions Architect"
-example_subjects = ["Cloud Computing", "Infrastructure Design"]
-example_education = "Bachelor's"
+# Example Usage for Testing
+if __name__ == "__main__":
+    example_certifications = "AWS Certified Solutions Architect"
+    example_subjects = ["Cloud Computing", "Infrastructure Design"]
+    example_education = "Bachelor's"
 
-predicted_roles = predict_job_roles(example_certifications, example_subjects, example_education)
-print("Predicted Job Roles:", predicted_roles)
+    predicted_roles = predict_job_roles_flask(example_certifications, example_subjects, example_education)
+    print("Predicted Job Roles:", predicted_roles)
