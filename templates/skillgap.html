@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Skill Gap Analysis</h1>
+        <p>Enter your current skills and your dream job to analyze the skill gap.</p>
+        
+        <form action="/skillgap" method="post">
+            <label for="user_skills">Your Skills:</label>
+            <textarea id="user_skills" name="user_skills" rows="4" placeholder="Enter your skills here..."></textarea>
+            
+            <label for="dream_job">Dream Job:</label>
+            <input type="text" id="dream_job" name="dream_job" placeholder="Enter your dream job...">
+            
+            <button type="submit">Analyze Skill Gap</button>
+        </form>
+        
+        {% if gaps %}
+        <div class="result">
+            <h2>Skill Gap Analysis Result:</h2>
+            <ul>
+                {% for gap in gaps %}
+                <li>{{ gap }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <a href="/" class="back-button">Back to Home</a>
+    </div>
+</body>
+</html>

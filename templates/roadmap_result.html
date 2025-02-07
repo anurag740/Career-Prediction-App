@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Roadmap Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Career Roadmap</h1>
+        <p>Here is the suggested roadmap for your chosen job role:</p>
+        
+        {% if roadmap %}
+        <div class="result">
+            <ul>
+                {% for step in roadmap %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p>No roadmap available. Please try again.</p>
+        {% endif %}
+        
+        <a href="/roadmap" class="back-button">Back</a>
+    </div>
+</body>
+</html>

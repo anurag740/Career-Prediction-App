@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analysis Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Skill Gap Analysis</h1>
+        <p>Here is the skill gap analysis based on your input:</p>
+        
+        {% if gaps %}
+        <div class="result">
+            <ul>
+                {% for gap in gaps %}
+                <li>{{ gap }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p>No analysis available. Please try again.</p>
+        {% endif %}
+        
+        <a href="/skillgap" class="back-button">Back</a>
+    </div>
+</body>
+</html>
