@@ -1,0 +1,96 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #0d0d0d, #1a1a2e);
+    color: #ffffff;
+    text-align: center;
+    margin: 0;  
+    padding: 0;
+}
+
+/* Container */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: rgba(24, 23, 23, 0.685);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 170, 255, 0.5);
+}
+
+/* Headings */
+h1 {
+    font-size: 24px;
+    color: #0040f0;
+    margin-bottom: 20px;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+input, textarea {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    background: #1a1a2e;
+    border-radius: 5px;
+    border: 1px solid #00aaff;
+    outline: none;
+    font-size: 14px;
+    color: white;
+}
+
+/* Button */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background: #0f24e0;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #a6d9f2;
+}
+
+/* Career List */
+.career-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.career-list li {
+    background: rgba(26, 25, 25, 0.626);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: white;
+    background: #0040f0;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.back-button:hover {
+    background: #b8e0f4;
+}

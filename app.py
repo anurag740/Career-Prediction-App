@@ -1,51 +1,48 @@
 from flask import Flask, render_template, request, redirect, url_for
-import joblib
-import pandas as pd
-
-# Load the pre-trained model and label binarizer
-pipeline, mlb = joblib.load("career_predictor_model.pkl")
+import subprocess
 
 app = Flask(__name__)
 
-# Home route - User selects details
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        # Get user inputs
-        certifications = request.form.get("certifications")
-        interested_subjects = request.form.getlist("interested_subjects")
-        education_level = request.form.get("education_level")
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/start')
+def start():
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    technical_skills = request.form.get('technical_skills', '')
+    soft_skills = request.form.get('soft_skills', '')
+    education = request.form.get('education', '')
+    certifications = request.form.get('certifications', '')
+    hobbies = request.form.get('hobbies', '')
+    
+    prompt = (f"Suggest top 10 career options based on the following details:\n\n"
+              f"Technical Skills: {technical_skills}\n"
+              f"Soft Skills: {soft_skills}\n"
+              f"Education: {education}\n"
+              f"Certifications: {certifications}\n"
+              f"Hobbies/Interests: {hobbies}\n\n"
+              f"Format: Career Name - Short Explanation")
+    
+    try:
+        command = ["ollama", "run", "llama3.2:1b", prompt]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=500)
         
-        # Redirect to result page with user inputs
-        return redirect(url_for("result", 
-                                certifications=certifications, 
-                                interested_subjects=",".join(interested_subjects), 
-                                education_level=education_level))
+        print("Command Output:", result.stdout)
+        print("Error Output:", result.stderr)
+        
+        if result.stdout.strip():
+            career_recommendations = result.stdout.strip().split("\n")
+        else:
+            career_recommendations = ["Error generating career recommendations. No response received."]
+    except Exception as e:
+        print("Exception:", str(e))
+        career_recommendations = ["An error occurred while generating recommendations.", str(e)]
     
-    # Render the homepage
-    return render_template("index.html")
+    return render_template('result.html', recommendations=career_recommendations)
 
-# Result route - Show the prediction
-@app.route("/result")
-def result():
-    # Get user inputs from query parameters
-    certifications = request.args.get("certifications")
-    interested_subjects = request.args.get("interested_subjects").split(",")
-    education_level = request.args.get("education_level")
-    
-    # Prepare the input for prediction
-    input_data = pd.DataFrame({
-        "Certifications": [certifications],
-        "Interested Subjects": [", ".join(interested_subjects)],
-        "Education Level": [education_level]
-    })
-    
-    # Make predictions
-    predictions = pipeline.predict(input_data)
-    predicted_roles = mlb.inverse_transform(predictions)[0]
-    
-    # Render the result page with predictions
-    return render_template("result.html", roles=predicted_roles)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
